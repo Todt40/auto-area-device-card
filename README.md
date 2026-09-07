@@ -1,4 +1,6 @@
-# Area Device List Card
+# Auto Area Device Card
+
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 
 A Home Assistant Lovelace card that lists entities grouped by area, auto-updating as devices and areas are added or removed — no fixed per-room list to maintain.
 
@@ -12,10 +14,18 @@ The usual pattern for a "devices by category" page in Lovelace is a static list 
 
 ## Installation
 
-1. Copy `area-device-list-card.js` into `config/www/area-device-list-card/` on your Home Assistant instance.
+### HACS (recommended)
+
+1. In HACS, go to the three-dot menu (top right) → **Custom repositories**, add this repository's URL with category **Dashboard**.
+2. Search for "Auto Area Device Card" in HACS and install it.
+3. HACS adds the Lovelace resource automatically. Reload your browser (clear cache if the card doesn't show up) and add the card to a dashboard.
+
+### Manual
+
+1. Copy `auto-area-device-card.js` into `config/www/auto-area-device-card/` on your Home Assistant instance.
 2. Add it as a Lovelace resource (Settings → Dashboards → ⋮ → Resources → Add Resource):
    ```
-   URL: /local/area-device-list-card/area-device-list-card.js?v=1
+   URL: /local/auto-area-device-card/auto-area-device-card.js?v=1
    Type: JavaScript Module
    ```
    The `?v=1` is a manual cache-buster — bump it (`?v=2`, `?v=3`, ...) whenever you update the file, so browsers that already cached the old version pick up the change.
@@ -23,7 +33,7 @@ The usual pattern for a "devices by category" page in Lovelace is a static list 
 ## Usage
 
 ```yaml
-type: custom:area-device-list-card
+type: custom:auto-area-device-card
 filters:
   - domain: light
 ```
@@ -35,7 +45,7 @@ This shows every `light.*` entity, one bubble-card toggle button per entity, gro
 Entities matching *any* filter are included (first matching filter wins if more than one would match the same entity):
 
 ```yaml
-type: custom:area-device-list-card
+type: custom:auto-area-device-card
 filters:
   - domain: binary_sensor
     device_class: motion
@@ -46,7 +56,7 @@ filters:
 `domain`/`device_class` also have plural forms — `domains`/`device_classes` — for matching any of several at once, so the example above can also be written as one filter:
 
 ```yaml
-type: custom:area-device-list-card
+type: custom:auto-area-device-card
 filters:
   - domain: binary_sensor
     device_classes: [motion, occupancy]
@@ -55,7 +65,7 @@ filters:
 Or match across several domains the same way:
 
 ```yaml
-type: custom:area-device-list-card
+type: custom:auto-area-device-card
 filters:
   - domains: [sensor, binary_sensor]
 ```
@@ -65,7 +75,7 @@ filters:
 Omit `device_class`/`device_classes` and add `exclude_device_classes` to match a domain except for classes handled elsewhere:
 
 ```yaml
-type: custom:area-device-list-card
+type: custom:auto-area-device-card
 filters:
   - domain: binary_sensor
     exclude_device_classes: [motion, occupancy, door, window]
@@ -76,7 +86,7 @@ filters:
 Omit `domain`/`domains` and use `exclude_domains` for a true catch-all:
 
 ```yaml
-type: custom:area-device-list-card
+type: custom:auto-area-device-card
 filters:
   - exclude_domains: [light, switch, camera, automation, script, scene, zone, person]
 ```
@@ -86,7 +96,7 @@ filters:
 `exclude_platforms` reads the entity registry's `platform` field to tell a real hardware sensor apart from a computed one — HA's own `template`, `threshold`, `derivative`, `statistics`, etc. integrations all create entities that look like ordinary sensors but aren't backed by actual hardware:
 
 ```yaml
-type: custom:area-device-list-card
+type: custom:auto-area-device-card
 filters:
   - domains: [sensor, binary_sensor]
     exclude_platforms: [template, threshold, derivative, statistics, utility_meter]
@@ -97,7 +107,7 @@ filters:
 `button_type` defaults to `switch` for `light`/`switch` domains and `state` (opens more-info on tap) for everything else. Override per filter:
 
 ```yaml
-type: custom:area-device-list-card
+type: custom:auto-area-device-card
 filters:
   - domain: climate
     button_type: state
@@ -108,7 +118,7 @@ filters:
 Instead of `filters:`, pass an explicit list of entity IDs — the card still groups them by area and excludes the same things (see below), it just skips its own filter matching entirely:
 
 ```yaml
-type: custom:area-device-list-card
+type: custom:auto-area-device-card
 entity_ids: [light.kitchen, switch.coffee_maker]
 button_type: state   # optional, same default as a filter's button_type —
                       # just one value for the whole list here
@@ -121,7 +131,7 @@ Use this when you've already worked out exactly which entities belong on the car
 By default, any area with the label `hidden` is skipped entirely. Customize with `hidden_labels`:
 
 ```yaml
-type: custom:area-device-list-card
+type: custom:auto-area-device-card
 filters:
   - domain: light
 hidden_labels: [hidden, no_dashboard]
@@ -132,7 +142,7 @@ hidden_labels: [hidden, no_dashboard]
 By default, an area with no floor assigned (Settings → Areas → Floors) is dropped entirely — a network closet, or an "Admin"/"Misc" area created just for organizing entities rather than an actual room, shouldn't show up as one. Set `require_floor: false` to show every matching area regardless of floor assignment:
 
 ```yaml
-type: custom:area-device-list-card
+type: custom:auto-area-device-card
 filters:
   - domain: light
 require_floor: false
@@ -141,7 +151,7 @@ require_floor: false
 ### Empty state text
 
 ```yaml
-type: custom:area-device-list-card
+type: custom:auto-area-device-card
 filters:
   - domain: humidifier
 empty_text: No humidifiers found.
@@ -162,6 +172,10 @@ Regardless of your filters (or `entity_ids:`), the following are never shown:
 ## Performance
 
 Rebuilding the card's DOM (creating new bubble-card elements) only happens when the *set* of matching entity IDs actually changes — a fast-changing sensor elsewhere in your system won't cause this card to tear down and recreate its buttons on every update. Only fresh `hass` state is pushed to the already-existing buttons on every update, which is cheap.
+
+## Issues
+
+Found a bug or have a feature request? [Open an issue](https://github.com/Todt40/auto-area-device-card/issues).
 
 ## License
 

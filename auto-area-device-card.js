@@ -1,66 +1,16 @@
-// area-device-list-card
-//
+// auto-area-device-card
 // Groups matching entities by area and renders one bubble-card button per
-// entity, with an area-name header per group — derived from the entity/
-// area registries at render time, so new devices show up automatically
-// with no config changes.
-//
-// Requires https://github.com/Clooos/Bubble-Card (bubble-card) to be
-// installed — this card renders its buttons as bubble-card elements.
-//
-// Config:
-//   type: custom:area-device-list-card
-//   filters:
-//     - domain: light
-//       button_type: switch        # optional, default: switch for
-//                                   # light/switch, state otherwise
-//     - domain: binary_sensor
-//       device_class: motion       # optional
-//     - domains: [sensor, binary_sensor]  # optional, "any of these
-//                                          # domains" (plural form of domain)
-//     - domain: binary_sensor
-//       device_classes: [door, garage_door, window, opening]  # optional,
-//                                          # plural form of device_class
-//     - domain: binary_sensor
-//       exclude_device_classes: [motion, door]  # optional, catch-all minus
-//                                                # specific device_classes
-//     - domains: [sensor, binary_sensor]
-//       exclude_platforms: [template, threshold, min_max]  # optional, tells
-//                                          # a real hardware sensor apart
-//                                          # from a computed/helper one via
-//                                          # the entity registry's `platform`
-//     - exclude_domains: [light, switch, camera] # omit "domain"/"domains"
-//                                                  # for "any domain except these"
-//   hidden_labels: [hidden]        # optional, area labels that hide that
-//                                   # area's group entirely (default: [hidden])
-//   require_floor: true            # optional, default true — drops areas
-//                                   # with no floor assigned (network
-//                                   # closets, admin/technical groupings
-//                                   # that aren't real rooms)
-//   empty_text: "No devices found." # optional
-//
-// Entities matching ANY filter are included (first match wins). Excluded
-// automatically: event/notify domains, browser_mod/zigbee2mqtt bridge
-// entities, helper group entities, and anything with an entity_category or
-// that's hidden/disabled in the entity registry.
-//
-// Alternatively, instead of `filters:`, pass an explicit list:
-//   type: custom:area-device-list-card
-//   entity_ids: [light.kitchen, switch.coffee_maker]
-//   button_type: state   # optional, default: switch for light/switch,
-//                         # state otherwise
-// Use this when the caller has already resolved exactly which entities
-// belong on the card (e.g. to implement first-match-wins across several
-// cards, which this card's own per-card filter matching can't do by
-// itself). Excluded/hidden/area-grouping behavior is identical either way.
+// entity. Reads the entity/area registries directly, so it rebuilds itself
+// as devices and areas change instead of needing a fixed per-room config.
+// Requires https://github.com/Clooos/Bubble-Card. Full config options: README.
 (function () {
-  class AreaDeviceListCard extends HTMLElement {
+  class AutoAreaDeviceCard extends HTMLElement {
     setConfig(config) {
       const hasFilters = Array.isArray(config?.filters) && config.filters.length;
       const hasEntityIds = Array.isArray(config?.entity_ids);
       if (!hasFilters && !hasEntityIds) {
         throw new Error(
-          'area-device-list-card: either "filters" (a list of {domain, device_class?, button_type?}) or "entity_ids" (an explicit list of entity_ids) is required'
+          'auto-area-device-card: either "filters" (a list of {domain, device_class?, button_type?}) or "entity_ids" (an explicit list of entity_ids) is required'
         );
       }
       this._filters = hasFilters ? config.filters : null;
@@ -248,12 +198,12 @@
     }
   }
 
-  customElements.get('area-device-list-card') || customElements.define('area-device-list-card', AreaDeviceListCard);
+  customElements.get('auto-area-device-card') || customElements.define('auto-area-device-card', AutoAreaDeviceCard);
 
   window.customCards = window.customCards || [];
   window.customCards.push({
-    type: 'area-device-list-card',
-    name: 'Area Device List Card',
+    type: 'auto-area-device-card',
+    name: 'Auto Area Device Card',
     description: 'Groups matching entities by area and renders bubble-card buttons, auto-updating as devices/areas change.',
   });
 })();
