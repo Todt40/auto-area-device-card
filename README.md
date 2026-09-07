@@ -18,6 +18,8 @@ The usual pattern for a "devices by category" page in Lovelace is a static list 
 
 ### HACS (recommended)
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Todt40&repository=auto-area-device-card&category=plugin)
+
 1. In HACS, go to the three-dot menu (top right) → **Custom repositories**, add this repository's URL with category **Dashboard**.
 2. Search for "Auto Area Device Card" in HACS and install it.
 3. HACS adds the Lovelace resource automatically. Reload your browser (clear cache if the card doesn't show up) and add the card to a dashboard.
@@ -178,6 +180,10 @@ Rebuilding the card's DOM (creating new bubble-card elements) only happens when 
 ## Issues
 
 Found a bug or have a feature request? [Open an issue](https://github.com/Todt40/auto-area-device-card/issues).
+
+## Support
+
+[![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://buymeacoffee.com/todt40)
 
 ## License
 
