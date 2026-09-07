@@ -4,7 +4,7 @@
 
 A Home Assistant Lovelace card that lists entities grouped by area, auto-updating as devices and areas are added or removed — no fixed per-room list to maintain.
 
-![Screenshot](images/preview.jpg)
+![Screenshot](images/preview.png)
 
 ## Why
 
