@@ -4,6 +4,8 @@
 
 A Home Assistant Lovelace card that lists entities grouped by area, auto-updating as devices and areas are added or removed — no fixed per-room list to maintain.
 
+![Screenshot](images/preview.jpg)
+
 ## Why
 
 The usual pattern for a "devices by category" page in Lovelace is a static list of `auto-entities` cards, one per room, each filtered to `area: <slug>`. Every new room needs a new section, and every new device needs to already be assigned to an area that's referenced somewhere — otherwise it silently doesn't show up. This card replaces that with one card per category: it reads the entity and area registries directly and rebuilds its groups whenever the *set* of matching entities/areas changes, not on every state update.
